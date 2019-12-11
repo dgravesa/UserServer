@@ -4,6 +4,7 @@ package model
 type UserData interface {
 	Insert(u User)
 	FindName(name string) (User, bool)
+	FindID(id uint64) (User, bool)
 }
 
 var userData UserData
@@ -16,4 +17,9 @@ func SetUserDataLayer(ud UserData) {
 // FindUserByName returns the user with a given name and true if found, false if not found.
 func FindUserByName(name string) (User, bool) {
 	return userData.FindName(name)
+}
+
+// FindUserByID returns the user with a given ID and true if found, false if not found.
+func FindUserByID(id uint64) (User, bool) {
+	return userData.FindID(id)
 }

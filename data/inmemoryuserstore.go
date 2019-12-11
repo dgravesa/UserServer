@@ -27,3 +27,13 @@ func (s *InMemoryUserStore) FindName(name string) (model.User, bool) {
 	}
 	return model.User{}, false
 }
+
+// FindID returns the user with a given ID and true if found, false if not found.
+func (s *InMemoryUserStore) FindID(id uint64) (model.User, bool) {
+	for _, user := range s.users {
+		if user.ID == id {
+			return user, true
+		}
+	}
+	return model.User{}, false
+}
