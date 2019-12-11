@@ -7,8 +7,8 @@ import (
 
 // User contains profile info for a user account.
 type User struct {
-	ID   uint64
-	Name string
+	ID   uint64 `json:"id"`
+	Name string `json:"name"`
 }
 
 // UnmarshalJSON gets a User from a JSON encoding.

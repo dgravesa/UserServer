@@ -28,6 +28,7 @@ func initTestUserData(testData []model.User) {
 
 func Test_GetUserByName_WhenNameExists_ReturnsCorrectUser(t *testing.T) {
 	// Arrange
+	initTestUserData(testUserData)
 	expectedCode := http.StatusOK
 	userName := "WaterDrinkerGuy1000"
 	target := fmt.Sprintf("http://localhost/user?name=%s", userName)

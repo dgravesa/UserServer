@@ -17,3 +17,13 @@ func (s *InMemoryUserStore) Insert(u model.User) {
 	u.ID = uint64(len(s.users))
 	s.users = append(s.users, u)
 }
+
+// FindName returns the user with a given name and true if found, false if not found.
+func (s *InMemoryUserStore) FindName(name string) (model.User, bool) {
+	for _, user := range s.users {
+		if user.Name == name {
+			return user, true
+		}
+	}
+	return model.User{}, false
+}
