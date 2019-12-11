@@ -119,7 +119,7 @@ func Test_GetUserByID_WhenIDDoesNotExist_ReturnsNotFound(t *testing.T) {
 	}
 }
 
-func Test_GetUserByID_WithNameAndIDMatch_ReturnsCorrectUser(t *testing.T) {
+func Test_GetUserByIDAndName_WithNameAndIDMatch_ReturnsCorrectUser(t *testing.T) {
 	// Arrange
 	initTestUserData(testUserData)
 	expectedCode := http.StatusOK
@@ -142,7 +142,7 @@ func Test_GetUserByID_WithNameAndIDMatch_ReturnsCorrectUser(t *testing.T) {
 	}
 }
 
-func Test_GetUserByID_WithNameAndIDMismatch_ReturnsNotFound(t *testing.T) {
+func Test_GetUserByIDAndName_WithNameAndIDMismatch_ReturnsNotFound(t *testing.T) {
 	// Arrange
 	initTestUserData(testUserData)
 	expectedCode := http.StatusNotFound
@@ -164,8 +164,22 @@ func Test_GetUserByID_WithNameAndIDMismatch_ReturnsNotFound(t *testing.T) {
 }
 
 func Test_GetUser_WithoutQuery_ReturnsBadRequest(t *testing.T) {
-	// TODO implement
-	t.SkipNow()
+	// Arrange
+	initTestUserData(testUserData)
+	expectedCode := http.StatusBadRequest
+	target := "http://localhost/user"
+	req := httptest.NewRequest("GET", target, nil)
+	res := httptest.NewRecorder()
+
+	// Act
+	userHandler(res, req)
+
+	// Assert
+	checkResponseCode(expectedCode, res.Code, t)
+	var user model.User
+	if err := json.Unmarshal(res.Body.Bytes(), &user); err == nil {
+		t.Errorf("user received when no response should have been given")
+	}
 }
 
 func Test_PostUser_WithNewName_ReturnsNewUserURL(t *testing.T) {
