@@ -14,6 +14,8 @@ import (
 var testUserData = []model.User{
 	model.User{Name: "Jeremy1"},
 	model.User{Name: "WaterDrinkerGuy1000"},
+	model.User{Name: "AlphaSquid13"},
+	model.User{Name: "BetaDolphin2"},
 }
 
 func initTestUserData(testData []model.User) {
@@ -24,6 +26,12 @@ func initTestUserData(testData []model.User) {
 	}
 
 	model.SetUserDataLayer(userData)
+}
+
+func checkResponseCode(expected, received int, t *testing.T) {
+	if expected != received {
+		t.Errorf("expected status code = %d, received status code = %d", expected, received)
+	}
 }
 
 func Test_GetUserByName_WhenNameExists_ReturnsCorrectUser(t *testing.T) {
@@ -39,20 +47,18 @@ func Test_GetUserByName_WhenNameExists_ReturnsCorrectUser(t *testing.T) {
 	userHandler(res, req)
 
 	// Assert
-	if res.Code != expectedCode {
-		t.Errorf("expected status code = %d, received status code = %d", expectedCode, res.Code)
-	} else {
-		var user model.User
-		if err := json.Unmarshal(res.Body.Bytes(), &user); err != nil {
-			t.Errorf("error decoding user: %s", err)
-		} else if userName != user.Name {
-			t.Errorf("expected user name = %s, received user name = %s", userName, user.Name)
-		}
+	checkResponseCode(expectedCode, res.Code, t)
+	var user model.User
+	if err := json.Unmarshal(res.Body.Bytes(), &user); err != nil {
+		t.Errorf("error decoding user: %s", err)
+	} else if userName != user.Name {
+		t.Errorf("expected user name = %s, received user name = %s", userName, user.Name)
 	}
 }
 
 func Test_GetUserByName_WhenNameDoesNotExist_ReturnsNotFound(t *testing.T) {
 	// Arrange
+	initTestUserData(testUserData)
 	expectedCode := http.StatusNotFound
 	userName := "NotARealUser"
 	target := fmt.Sprintf("http://localhost/user?name=%s", userName)
@@ -63,19 +69,54 @@ func Test_GetUserByName_WhenNameDoesNotExist_ReturnsNotFound(t *testing.T) {
 	userHandler(res, req)
 
 	// Assert
-	if res.Code != expectedCode {
-		t.Errorf("expected status code = %d, received status code = %d", expectedCode, res.Code)
+	checkResponseCode(expectedCode, res.Code, t)
+	var user model.User
+	if err := json.Unmarshal(res.Body.Bytes(), &user); err == nil {
+		t.Errorf("user received when no response should have been given")
 	}
 }
 
 func Test_GetUserByID_WhenIDExists_ReturnsCorrectUser(t *testing.T) {
-	// TODO implement
-	t.SkipNow()
+	// Arrange
+	initTestUserData(testUserData)
+	expectedCode := http.StatusOK
+	userName := "AlphaSquid13"
+	userID := uint64(2) // expected index from in-memory user store
+	target := fmt.Sprintf("http://localhost/user?id=%d", userID)
+	req := httptest.NewRequest("GET", target, nil)
+	res := httptest.NewRecorder()
+
+	// Act
+	userHandler(res, req)
+
+	// Assert
+	checkResponseCode(expectedCode, res.Code, t)
+	var user model.User
+	if err := json.Unmarshal(res.Body.Bytes(), &user); err != nil {
+		t.Errorf("error decoding user: %s", err)
+	} else if user.Name != userName || user.ID != userID {
+		t.Errorf("expected name/id: %s/%d, received name/id: %s/%d", userName, userID, user.Name, user.ID)
+	}
 }
 
 func Test_GetUserByID_WhenIDDoesNotExist_ReturnsNotFound(t *testing.T) {
-	// TODO implement
-	t.SkipNow()
+	// Arrange
+	initTestUserData(testUserData)
+	expectedCode := http.StatusNotFound
+	userID := uint64(101)
+	target := fmt.Sprintf("http://localhost/user?id=%d", userID)
+	req := httptest.NewRequest("GET", target, nil)
+	res := httptest.NewRecorder()
+
+	// Act
+	userHandler(res, req)
+
+	// Assert
+	checkResponseCode(expectedCode, res.Code, t)
+	var user model.User
+	if err := json.Unmarshal(res.Body.Bytes(), &user); err == nil {
+		t.Errorf("user received when no response should have been given")
+	}
 }
 
 func Test_GetUser_WithoutQuery_ReturnsBadRequest(t *testing.T) {
