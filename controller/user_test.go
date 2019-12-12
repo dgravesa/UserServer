@@ -241,16 +241,52 @@ func Test_PostUser_WithoutName_ReturnsBadRequest(t *testing.T) {
 }
 
 func Test_DeleteUser_WhenIDExists_ReturnsNotFoundOnSubsequentGet(t *testing.T) {
-	// TODO implement
-	t.SkipNow()
+	// Arrange
+	initTestUserData(testUserData)
+	expectedCode := http.StatusOK
+	userID := 2
+	userName := "AlphaSquid13"
+	target := fmt.Sprintf("http://localhost/user?id=%d", userID)
+	req := httptest.NewRequest("DELETE", target, nil)
+	res := httptest.NewRecorder()
+
+	// Act
+	userHandler(res, req)
+
+	// Assert
+	checkResponseCode(expectedCode, res.Code, t)
+	if _, found := model.FindUserByName(userName); found {
+		t.Error("user found in data after delete")
+	}
 }
 
 func Test_DeleteUser_WhenIDDoesNotExist_ReturnsNotFound(t *testing.T) {
-	// TODO implement
-	t.SkipNow()
+	// Arrange
+	initTestUserData(testUserData)
+	expectedCode := http.StatusNotFound
+	userID := 101
+	target := fmt.Sprintf("http://localhost/user?id=%d", userID)
+	req := httptest.NewRequest("DELETE", target, nil)
+	res := httptest.NewRecorder()
+
+	// Act
+	userHandler(res, req)
+
+	// Assert
+	checkResponseCode(expectedCode, res.Code, t)
 }
 
 func Test_DeleteUser_WithoutID_ReturnsBadRequest(t *testing.T) {
-	// TODO implement
-	t.SkipNow()
+	// Arrange
+	initTestUserData(testUserData)
+	expectedCode := http.StatusBadRequest
+	target := "http://localhost/user"
+	req := httptest.NewRequest("DELETE", target, nil)
+	res := httptest.NewRecorder()
+
+	// Act
+	userHandler(res, req)
+
+	// Assert
+	checkResponseCode(expectedCode, res.Code, t)
 }
