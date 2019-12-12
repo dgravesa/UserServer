@@ -7,8 +7,7 @@ func userHandler(w http.ResponseWriter, r *http.Request) {
 	case http.MethodGet:
 		getUser(w, r)
 	case http.MethodPost:
-		fallthrough // TODO implement
-		// postUser(w, r)
+		postUser(w, r)
 	case http.MethodPut:
 		fallthrough // TODO implement
 		// putUser(w, r)

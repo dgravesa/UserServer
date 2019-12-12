@@ -183,20 +183,61 @@ func Test_GetUser_WithoutQuery_ReturnsBadRequest(t *testing.T) {
 }
 
 func Test_PostUser_WithNewName_ReturnsNewUserURL(t *testing.T) {
-	// TODO implement
-	t.SkipNow()
+	// Arrange
+	initTestUserData(testUserData)
+	expectedCode := http.StatusCreated
+	newUserName := "H2Oliver"
+	target := fmt.Sprintf("http://localhost/user?name=%s", newUserName)
+	req := httptest.NewRequest("POST", target, nil)
+	rec := httptest.NewRecorder()
 
-	// TODO verify user at URL matches expected
+	// Act
+	userHandler(rec, req)
+
+	// Assert
+	res := rec.Result()
+	checkResponseCode(expectedCode, res.StatusCode, t)
+	loc, err := res.Location()
+	if err != nil {
+		t.Fatal(err)
+	}
+	verifyReq := httptest.NewRequest("GET", loc.String(), nil)
+	verifyRec := httptest.NewRecorder()
+	userHandler(verifyRec, verifyReq)
+	checkResponseCode(http.StatusOK, verifyRec.Code, t)
 }
 
 func Test_PostUser_WithExistingName_ReturnsConflict(t *testing.T) {
-	// TODO implement
-	t.SkipNow()
+	// Arrange
+	initTestUserData(testUserData)
+	expectedCode := http.StatusConflict
+	newUserName := "WaterDrinkerGuy1000"
+	target := fmt.Sprintf("http://localhost/user?name=%s", newUserName)
+	req := httptest.NewRequest("POST", target, nil)
+	rec := httptest.NewRecorder()
+
+	// Act
+	userHandler(rec, req)
+
+	// Assert
+	res := rec.Result()
+	checkResponseCode(expectedCode, res.StatusCode, t)
 }
 
 func Test_PostUser_WithoutName_ReturnsBadRequest(t *testing.T) {
-	// TODO implement
-	t.SkipNow()
+	// Arrange
+	initTestUserData(testUserData)
+	expectedCode := http.StatusBadRequest
+	target := "http://localhost/user"
+	req := httptest.NewRequest("POST", target, nil)
+	rec := httptest.NewRecorder()
+
+	// Act
+	userHandler(rec, req)
+
+	// Assert
+	res := rec.Result()
+	checkResponseCode(expectedCode, res.StatusCode, t)
 }
 
 func Test_DeleteUser_WhenIDExists_ReturnsNotFoundOnSubsequentGet(t *testing.T) {
