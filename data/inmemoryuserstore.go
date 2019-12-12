@@ -18,6 +18,15 @@ func (s *InMemoryUserStore) Insert(u model.User) {
 	s.users = append(s.users, u)
 }
 
+// Remove removes users from the data by ID.
+func (s *InMemoryUserStore) Remove(uid uint64) {
+	for i, user := range s.users {
+		if user.ID == uid {
+			s.users = append(s.users[:i], s.users[i+1:]...)
+		}
+	}
+}
+
 // FindName returns the user with a given name and true if found, false if not found.
 func (s *InMemoryUserStore) FindName(name string) (model.User, bool) {
 	for _, user := range s.users {

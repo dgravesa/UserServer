@@ -240,7 +240,7 @@ func Test_PostUser_WithoutName_ReturnsBadRequest(t *testing.T) {
 	checkResponseCode(expectedCode, res.StatusCode, t)
 }
 
-func Test_DeleteUser_WhenIDExists_ReturnsNotFoundOnSubsequentGet(t *testing.T) {
+func Test_DeleteUser_WhenIDExists_ReturnsSuccessAndHasDeletedUser(t *testing.T) {
 	// Arrange
 	initTestUserData(testUserData)
 	expectedCode := http.StatusOK

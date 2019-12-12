@@ -8,12 +8,11 @@ func userHandler(w http.ResponseWriter, r *http.Request) {
 		getUser(w, r)
 	case http.MethodPost:
 		postUser(w, r)
+	case http.MethodDelete:
+		deleteUser(w, r)
 	case http.MethodPut:
 		fallthrough // TODO implement
 		// putUser(w, r)
-	case http.MethodDelete:
-		fallthrough // TODO implement
-		// deleteUser(w, r)
 	default:
 		w.WriteHeader(http.StatusNotImplemented)
 	}
