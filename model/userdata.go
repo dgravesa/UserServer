@@ -14,6 +14,11 @@ func SetUserDataLayer(ud UserData) {
 	userData = ud
 }
 
+// AddUser adds a new user to the data.
+func AddUser(u User) {
+	userData.Insert(u)
+}
+
 // FindUserByName returns the user with a given name and true if found, false if not found.
 func FindUserByName(name string) (User, bool) {
 	return userData.FindName(name)
