@@ -4,17 +4,21 @@ import "github.com/dgravesa/WaterLogger-UserServer/model"
 
 // InMemoryUserStore is an in-memory container for user data.
 type InMemoryUserStore struct {
-	users []model.User
+	users  []model.User
+	nextID uint64
 }
 
 // NewInMemoryUserStore creates a new in-memory container for user data.
 func NewInMemoryUserStore() *InMemoryUserStore {
-	return new(InMemoryUserStore)
+	return &InMemoryUserStore{
+		nextID: 0,
+	}
 }
 
 // Insert adds a new user to the data.
 func (s *InMemoryUserStore) Insert(u model.User) {
-	u.ID = uint64(len(s.users))
+	u.ID = s.nextID
+	s.nextID++
 	s.users = append(s.users, u)
 }
 
