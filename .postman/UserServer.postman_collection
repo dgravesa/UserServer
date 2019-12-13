@@ -1,0 +1,135 @@
+{
+	"info": {
+		"_postman_id": "60629aa5-60e0-4cb2-8434-cf147d4d2bc0",
+		"name": "User Server",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create User: douglas",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a774d155-9271-4768-b9c3-e509d9310798",
+						"exec": [
+							"pm.test(\"Successful POST request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([201,202]);",
+							"});",
+							"",
+							"let loc = pm.response.headers.get(\"Location\");",
+							"pm.globals.set(\"userLocationURL\", loc);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "ec360314-76b2-43a8-815b-5a262050b4dd",
+						"exec": [
+							"pm.globals.set(\"userByNameURL\", \"http://localhost:11011/user?name=douglas\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{userByNameURL}}",
+					"host": [
+						"{{userByNameURL}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User: douglas",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "4d6f534d-8006-4db6-ad50-b8769d5fe626",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{userLocationURL}}",
+					"host": [
+						"{{userLocationURL}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User By Name: douglas",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ed18a5ce-6e2d-4ddb-888f-eb492befbdac",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{userByNameURL}}",
+					"host": [
+						"{{userByNameURL}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete User: douglas",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "7d5bd457-70f5-4044-a2d0-0575445ab58f",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{userLocationURL}}",
+					"host": [
+						"{{userLocationURL}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
