@@ -61,7 +61,7 @@ func getUser(w http.ResponseWriter, r *http.Request) {
 		userToWrite = userByName
 	}
 
+	w.WriteHeader(http.StatusOK)
 	enc := json.NewEncoder(w)
 	enc.Encode(userToWrite)
-	w.WriteHeader(http.StatusOK)
 }

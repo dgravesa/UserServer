@@ -31,8 +31,14 @@ func postUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// TODO is this the best way to construct location URI
-	location := fmt.Sprintf("%s://%s/user?id=%d", r.URL.Scheme, r.URL.Host, user.ID)
+	var scheme string
+	if r.TLS != nil {
+		scheme = "https"
+	} else {
+		scheme = "http"
+	}
+
+	location := fmt.Sprintf("%s://%s/user?id=%d", scheme, r.Host, user.ID)
 	w.Header().Set("Location", location)
 	w.WriteHeader(http.StatusCreated)
 }
