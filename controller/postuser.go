@@ -31,7 +31,7 @@ func postUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	location := fmt.Sprintf("/user?id=%d", user.ID)
+	location := fmt.Sprintf("/users?id=%d", user.ID)
 	w.Header().Set("Location", location)
 	w.WriteHeader(http.StatusCreated)
 }
