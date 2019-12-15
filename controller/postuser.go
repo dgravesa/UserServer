@@ -31,14 +31,7 @@ func postUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var scheme string
-	if r.TLS != nil {
-		scheme = "https"
-	} else {
-		scheme = "http"
-	}
-
-	location := fmt.Sprintf("%s://%s/user?id=%d", scheme, r.Host, user.ID)
+	location := fmt.Sprintf("/user?id=%d", user.ID)
 	w.Header().Set("Location", location)
 	w.WriteHeader(http.StatusCreated)
 }
